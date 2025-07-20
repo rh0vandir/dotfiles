@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # -----------------------------------------------------------------------------
-#  exa installation script
+#  exa/eza installation script
 #
 #  Creator: Rhovandir
 #  License: MIT
 #  Created: 2025-07-20
-#  Version: 1.0.5
+#  Version: 1.0.6
 # -----------------------------------------------------------------------------
 set -e
 
@@ -17,17 +17,21 @@ RED='\033[0;31m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-echo -e "${BLUE}Installing exa...${NC}"
+echo -e "${BLUE}Installing exa or eza...${NC}"
 
 # Function to check if command exists
 command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Check if exa is already installed
+# Check if exa or eza is already installed
 if command_exists exa; then
     echo -e "${GREEN}exa is already installed!${NC}"
     exa --version
+    exit 0
+elif command_exists eza; then
+    echo -e "${GREEN}eza is already installed!${NC}"
+    eza --version
     exit 0
 fi
 
@@ -41,12 +45,19 @@ try_package_manager() {
         return 1
     fi
     
-    if sudo apt update && sudo apt install -y exa; then
+    # Try installing eza first (preferred over exa)
+    if sudo apt update && sudo apt install -y eza; then
+        echo -e "${GREEN}Installed eza via apt${NC}"
+        return 0
+    fi
+    
+    # Fall back to exa if eza is not available
+    if sudo apt install -y exa; then
         echo -e "${GREEN}Installed exa via apt${NC}"
         return 0
     fi
     
-    echo -e "${YELLOW}exa not available via apt${NC}"
+    echo -e "${YELLOW}Neither eza nor exa available via apt${NC}"
     return 1
 }
 
@@ -79,9 +90,9 @@ install_rust() {
     echo -e "${GREEN}Rust installed successfully!${NC}"
 }
 
-# Function to install exa from source
-install_exa_source() {
-    echo -e "${BLUE}Installing exa from source...${NC}"
+# Function to install eza/exa from source
+install_from_source() {
+    echo -e "${BLUE}Installing from source...${NC}"
     
     # Check if Rust is installed
     if ! command_exists cargo; then
@@ -96,12 +107,26 @@ install_exa_source() {
         export PATH="$HOME/.cargo/bin:$PATH"
     fi
     
-    # Install exa using cargo
-    echo -e "${BLUE}Installing exa using cargo...${NC}"
-    cargo install exa
+    # Try installing eza first (preferred over exa)
+    echo -e "${BLUE}Trying to install eza using cargo...${NC}"
+    if cargo install eza; then
+        echo -e "${GREEN}eza installed successfully from source!${NC}"
+        eza --version
+        
+        # Add cargo bin to PATH permanently if not already there
+        if ! grep -q "cargo/bin" "$HOME/.bashrc"; then
+            echo "" >> "$HOME/.bashrc"
+            echo "# Add Rust cargo bin to PATH" >> "$HOME/.bashrc"
+            echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> "$HOME/.bashrc"
+            echo -e "${YELLOW}Added cargo/bin to PATH in ~/.bashrc${NC}"
+        fi
+        
+        return 0
+    fi
     
-    # Verify installation
-    if command_exists exa; then
+    # Fall back to exa if eza installation fails
+    echo -e "${YELLOW}eza installation failed, trying exa...${NC}"
+    if cargo install exa; then
         echo -e "${GREEN}exa installed successfully from source!${NC}"
         exa --version
         
@@ -114,10 +139,10 @@ install_exa_source() {
         fi
         
         return 0
-    else
-        echo -e "${RED}Source installation failed!${NC}"
-        return 1
     fi
+    
+    echo -e "${RED}Source installation failed for both eza and exa!${NC}"
+    return 1
 }
 
 # Main installation logic
@@ -129,7 +154,7 @@ main() {
     fi
     
     # Fall back to source installation
-    if install_exa_source; then
+    if install_from_source; then
         echo ""
         echo -e "${GREEN}Installation complete!${NC}"
         echo "You may need to restart your terminal or run: source ~/.bashrc"
@@ -138,7 +163,7 @@ main() {
     
     # If both failed
     echo -e "${RED}Installation failed!${NC}"
-    echo "Could not install exa via package manager or source compilation."
+    echo "Could not install eza or exa via package manager or source compilation."
     echo "You can try installing it manually or use standard ls with colors."
     return 1
 }
