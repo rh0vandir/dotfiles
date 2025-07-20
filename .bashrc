@@ -59,13 +59,51 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-# Show Git branch in prompt
-parse_git_branch() {
-  git branch 2>/dev/null | grep '*' | sed 's/* //'
+# Show Git branch in prompt with status
+parse_git() {
+  local branch
+  local status=""
+  
+  # Get current branch
+  branch=$(git branch 2>/dev/null | grep '*' | sed 's/* //')
+  
+  if [ -n "$branch" ]; then
+    # Check for uncommitted changes
+    if ! git diff --quiet 2>/dev/null; then
+      status="${status}●"  # Modified files
+    fi
+    
+    # Check for untracked files
+    if [ -n "$(git ls-files --others --exclude-standard 2>/dev/null)" ]; then
+      status="${status}○"  # Untracked files
+    fi
+    
+    # Check if ahead/behind remote
+    local ahead_behind
+    ahead_behind=$(git rev-list --count --left-right @{u}...HEAD 2>/dev/null)
+    if [ -n "$ahead_behind" ]; then
+      local ahead=$(echo "$ahead_behind" | cut -f1)
+      local behind=$(echo "$ahead_behind" | cut -f2)
+      if [ "$ahead" -gt 0 ] && [ "$behind" -gt 0 ]; then
+        status="${status}↕"  # Diverged
+      elif [ "$ahead" -gt 0 ]; then
+        status="${status}↑"  # Ahead
+      elif [ "$behind" -gt 0 ]; then
+        status="${status}↓"  # Behind
+      fi
+    fi
+    
+    # Return branch name with status indicators
+    if [ -n "$status" ]; then
+      echo "($branch $status)"
+    else
+      echo "($branch)"
+    fi
+  fi
 }
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;31m\]\u\[\033[01;33m\]@\[\033[01;36m\]\h \[\033[01;33m\]\w\[\033[01;32m\] $(parse_git_branch) \[\033[01;35m\]\$ \[\033[00m\]'
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;31m\]\u\[\033[01;33m\]@\[\033[01;36m\]\h \[\033[01;33m\]\w\[\033[01;32m\] $(parse_git) \[\033[01;35m\]\$ \[\033[00m\]'
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi

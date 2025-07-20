@@ -1,7 +1,13 @@
 #!/bin/bash
 
-# Script to install exa from source if not available via package manager
-
+# -----------------------------------------------------------------------------
+#  exa installation script
+#
+#  Creator: Rhovandir
+#  License: MIT
+#  Created: 2025-07-20
+#  Version: 1.0.5
+# -----------------------------------------------------------------------------
 set -e
 
 # Colors

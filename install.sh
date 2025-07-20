@@ -1,8 +1,25 @@
 #!/bin/bash
 
+
+# -----------------------------------------------------------------------------
+#  install.sh - Dotfiles installation script
+#
+#  Creator: Rhovandir
+#  License: MIT
+#  Created: 2025-07-20
+#  Version: 1.0.5
+#
+# -----------------------------------------------------------------------------
+
+
+
+
 # Simple Dotfiles Installation Script
 
 set -e
+
+# script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Colors
 GREEN='\033[0;32m'
@@ -35,8 +52,7 @@ install_exa() {
     echo -e "${YELLOW}exa not available via apt${NC}"
     if [[ -f "install_exa.sh" ]]; then
         echo -e "${BLUE}Installing exa from source...${NC}"
-        chmod +x install_exa.sh
-        ./install_exa.sh
+        bash "$SCRIPT_DIR/install_exa.sh"
     else
         echo -e "${RED}install_exa.sh not found in current directory${NC}"
         echo -e "${YELLOW}Will use standard ls with colors${NC}"
@@ -52,7 +68,7 @@ install_packages() {
     if ! command_exists apt; then
         echo -e "${RED}This script only supports Ubuntu/Debian systems${NC}"
         echo "Please install the following packages manually:"
-        echo "- exa (or use ./install_exa.sh)"
+        echo "- exa (or use $SCRIPT_DIR/install_exa.sh)"
         echo "- hstr"
         echo "- autojump"
         return 1
@@ -62,11 +78,28 @@ install_packages() {
     sudo apt update
     
     # Install exa first
-    install_exa
+    if command_exists exa; then
+        echo -e "${GREEN}exa is already installed${NC}"
+    else
+        install_exa
+    fi
     
-    # Install other packages
-    echo "Installing packages: ${PACKAGES[*]}"
-    sudo apt install -y "${PACKAGES[@]}"
+    # Install other packages only if not already installed
+    to_install=()
+    for pkg in "${PACKAGES[@]}"; do
+        if ! dpkg -s "$pkg" >/dev/null 2>&1; then
+            to_install+=("$pkg")
+        else
+            echo -e "${GREEN}$pkg is already installed${NC}"
+        fi
+    done
+
+    if [ "${#to_install[@]}" -gt 0 ]; then
+        echo "Installing packages: ${to_install[*]}"
+        sudo apt install -y "${to_install[@]}"
+    else
+        echo -e "${GREEN}All packages are already installed${NC}"
+    fi
 }
 
 # Function to backup and copy file
@@ -76,7 +109,7 @@ install_file() {
     
     if [[ -f "$target" ]]; then
         echo -e "${YELLOW}Backing up existing $target${NC}"
-        cp "$target" "backup/$(basename "$target")"
+        cp "$target" "$SCRIPT_DIR/backup/$(basename "$target")"
     fi
     
     echo "Installing $target"
@@ -84,14 +117,14 @@ install_file() {
 }
 
 # Create backup directory
-mkdir -p backup
+mkdir -p "$SCRIPT_DIR/backup"
 
 # Install required packages
 install_packages
 
 # Install dotfiles
-install_file ".bashrc" "$HOME/.bashrc"
-install_file ".bash_aliases" "$HOME/.bash_aliases"
+install_file "$SCRIPT_DIR/.bashrc" "$HOME/.bashrc"
+install_file "$SCRIPT_DIR/.bash_aliases" "$HOME/.bash_aliases"
 
 echo -e "${GREEN}Installation complete!${NC}"
 echo "Backups are stored in the backup/ directory"
@@ -103,4 +136,5 @@ echo "- hstr: Command history search (Ctrl+R)"
 echo "- autojump: Smart directory navigation"
 echo ""
 echo -e "${BLUE}Personal customizations:${NC}"
-echo "- Create ~/.bashrc.local to add local paths and settings" 
+echo "- Create ~/.bashrc.local to add local paths and settings"
+ 
