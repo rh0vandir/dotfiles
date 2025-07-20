@@ -68,14 +68,19 @@ parse_git() {
   branch=$(git branch 2>/dev/null | grep '*' | sed 's/* //')
   
   if [ -n "$branch" ]; then
-    # Check for uncommitted changes
+    # Check for staged changes (added but not committed)
+    if ! git diff --cached --quiet 2>/dev/null; then
+      status="${status} ★"  # Staged files
+    fi
+    
+    # Check for unstaged changes (modified but not staged)
     if ! git diff --quiet 2>/dev/null; then
-      status="${status}●"  # Modified files
+      status="${status} ●"  # Unstaged changes
     fi
     
     # Check for untracked files
     if [ -n "$(git ls-files --others --exclude-standard 2>/dev/null)" ]; then
-      status="${status}○"  # Untracked files
+      status="${status} ○"  # Untracked files
     fi
     
     # Check if ahead/behind remote
@@ -87,15 +92,21 @@ parse_git() {
       if [ "$ahead" -gt 0 ] && [ "$behind" -gt 0 ]; then
         status="${status}↕"  # Diverged
       elif [ "$ahead" -gt 0 ]; then
-        status="${status}↑"  # Ahead
+        status="${status}↑"  # Local commits not pushed
       elif [ "$behind" -gt 0 ]; then
-        status="${status}↓"  # Behind
+        status="${status}↓"  # Behind remote
+      fi
+    else
+      # No upstream branch set, check if we have any commits
+      local commit_count=$(git rev-list --count HEAD 2>/dev/null)
+      if [ "$commit_count" -gt 0 ]; then
+        status="${status}⚠"  # Has commits but no upstream
       fi
     fi
     
     # Return branch name with status indicators
     if [ -n "$status" ]; then
-      echo "($branch $status)"
+      echo "(${branch}${status})"
     else
       echo "($branch)"
     fi
