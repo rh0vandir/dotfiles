@@ -3,21 +3,28 @@ alias ..='cd .. '
 alias ...='cd ../.. '
 alias o='less'
 alias tailf='tail -f '
-alias lt='ls --human-readable --size -1 -S --classify'
 alias mnt="mount | awk -F' ' '{ printf \"%s\t%s\n\",\$1,\$3; }' | column -t | egrep ^/dev/ | sort"
 alias cpv='rsync -ah --info=progress2'
 alias lsdisks='lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT,UUID,MODEL,SERIAL,REV,PTTYPE'
 
-# colorfull things - use exa if available, fallback to ls with colors
-if command -v exa >/dev/null 2>&1; then
-    alias l='exa -l --color=auto'
+# colorfull things - use exa or eza if available, fallback to ls with colors
+if command -v eza >/dev/null 2>&1; then
+    alias l='eza -alF --color=auto'
+    alias ls='eza -a --color=auto'
+    alias lt='eza --tree --color=auto'
+    alias ll='eza -la --color=auto'
+elif command -v exa >/dev/null 2>&1; then
+    alias l='exa -alF --color=auto'
     alias ls='exa --color=auto'
-    alias la='exa -a --color=auto'
+    alias la='exa -a --color=auto --group-directories-first --oneline'
     alias lt='exa --tree --color=auto'
+    alias ll='exa -la --color=auto'
 else
+    alias l='ls -alF --color=auto'
     alias ls='ls --color=auto'
     alias ll='ls -la --color=auto'
     alias la='ls -a --color=auto'
+    alias lt='ls --human-readable --size -1 -S --classify'
 fi
 
 alias h='colorful_history'
