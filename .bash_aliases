@@ -16,7 +16,7 @@ if command -v eza >/dev/null 2>&1; then
 elif command -v exa >/dev/null 2>&1; then
     alias l='exa -alF --color=auto'
     alias ls='exa --color=auto'
-    alias la='exa -a --color=auto --group-directories-first --oneline'
+    alias la='exa -a --color=auto'
     alias lt='exa --tree --color=auto'
     alias ll='exa -la --color=auto'
 else
