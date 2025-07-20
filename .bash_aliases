@@ -10,10 +10,10 @@ alias lsdisks='lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT,UUID,MODEL,SERIAL,REV,P
 
 # colorfull things - use exa if available, fallback to ls with colors
 if command -v exa >/dev/null 2>&1; then
+    alias l='exa -l --color=auto'
     alias ls='exa --color=auto'
-    alias ll='exa -l --color=auto'
     alias la='exa -a --color=auto'
-    alias lt='exa --tree'
+    alias lt='exa --tree --color=auto'
 else
     alias ls='ls --color=auto'
     alias ll='ls -la --color=auto'
