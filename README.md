@@ -6,7 +6,6 @@ My personal dotfiles for Ubuntu/Debian-based systems.
 
 - `.bashrc` - Bash configuration with history timestamps, aliases, and HSTR setup
 - `.bash_aliases` - Custom bash aliases with smart fallbacks
-- `.profile` - Shell profile settings
 
 ## Dependencies
 
@@ -65,8 +64,6 @@ dotfiles/
 ├── backup/             # Backup directory for existing files
 ├── .bashrc            # Bash configuration with Git prompt
 ├── .bash_aliases      # Smart aliases with fallbacks
-├── .profile           # Shell profile
-├── .gitconfig         # Git configuration
 └── README.md          # This file
 ```
 

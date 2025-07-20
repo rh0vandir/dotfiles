@@ -92,8 +92,6 @@ install_packages
 # Install dotfiles
 install_file ".bashrc" "$HOME/.bashrc"
 install_file ".bash_aliases" "$HOME/.bash_aliases"
-install_file ".profile" "$HOME/.profile"
-install_file ".gitconfig" "$HOME/.gitconfig"
 
 echo -e "${GREEN}Installation complete!${NC}"
 echo "Backups are stored in the backup/ directory"
