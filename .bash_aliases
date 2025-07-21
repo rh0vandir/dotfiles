@@ -27,8 +27,6 @@ else
     alias lt='ls --human-readable --size -1 -S --classify'
 fi
 
-alias h='colorful_history'
-
 # Logs (only create aliases if the logs exist)
 [ -f /var/log/syslog ]      && alias syslog='less /var/log/syslog '
 [ -f /var/log/auth.log ]    && alias authlog='less /var/log/auth.log '
