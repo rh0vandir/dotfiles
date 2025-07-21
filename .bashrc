@@ -180,12 +180,6 @@ elif [ -s /usr/share/autojump/autojump.bash ]; then
     . /usr/share/autojump/autojump.bash 2>/dev/null || true
 fi
 
-# Function to display colorful history with green for username, normal color for time, and blue for commands
-colorful_history() {
-    local num_lines=${1:-50}  # Default to 50 lines if no argument is provided
-    history | tail -n "$num_lines" | sed -e "s/^\([ ]*[0-9]*\)\(\s*[0-9-]*\s*[0-9:]*\)\(.*\)$/\x1b[32m$(whoami)\x1b[0m \x1b[0m\2\x1b[34m\3\x1b[0m/"
-}
-
 # HSTR configuration - add this to ~/.bashrc
 alias hh=hstr                    # hh to be alias for hstr
 export HSTR_CONFIG=hicolor       # get more colors
