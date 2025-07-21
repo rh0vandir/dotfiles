@@ -4,27 +4,25 @@ My personal dotfiles for Ubuntu/Debian-based systems.
 
 ## What's Included
 
-- `.bashrc` - Bash configuration with history timestamps, aliases, and HSTR setup
-- `.bash_aliases` - Custom bash aliases with smart fallbacks
+- `.bashrc` - Bash configuration with Git integration, history timestamps, and enhanced prompt
+- `.bash_aliases` - Smart aliases with modern ls fallbacks and Git shortcuts
+- `install.sh` - Automated installation script with package management
 
 ## Dependencies
 
 The installation script will automatically install these packages:
-- **exa** - Modern replacement for `ls` with colors and icons (via package manager or source compilation)
+- **eza/exa** - Modern replacement for `ls` with colors and icons (via package manager)
 - **hstr** - Command history search (Ctrl+R)
 - **autojump** - Smart directory navigation
 
-### exa Installation
+### Modern ls Installation
 
-The installer uses a comprehensive approach to install `exa`:
-- **Package manager first** - Tries apt (Ubuntu/Debian)
-- **Source compilation** - Falls back to Rust/cargo compilation if package manager fails
-- **Automatic dependencies** - Installs curl and Rust if needed
+The installer uses a smart approach to install modern ls replacements:
+- **eza first** - Tries to install eza (preferred, available in Ubuntu 24.04+)
+- **exa fallback** - Falls back to exa if eza is not available (Ubuntu 22.04)
+- **Standard ls** - Uses colored ls if neither is available
 
-You can also manually install exa anytime:
-```bash
-./install_exa.sh
-```
+The `.bash_aliases` automatically detects which tool is available and sets up appropriate aliases.
 
 ## Installation
 
@@ -51,8 +49,8 @@ curl -fsSL https://raw.githubusercontent.com/rh0vandir/dotfiles/main/install.sh 
 - **Simple Structure**: All dotfiles in the root directory
 - **Ubuntu/Debian Focused**: Optimized for apt-based systems
 - **Auto-Dependencies**: Automatically installs required packages
-- **Smart Fallbacks**: Uses exa if available, falls back to colored ls
-- **Comprehensive exa**: Handles exa installation via apt or source compilation
+- **Smart Fallbacks**: Uses eza if available, falls back to exa, then colored ls
+- **Modern ls Support**: Handles both eza and exa installation via apt
 - **Conditional Aliases**: Log aliases only created if log files exist
 
 ## Structure
@@ -60,28 +58,40 @@ curl -fsSL https://raw.githubusercontent.com/rh0vandir/dotfiles/main/install.sh 
 ```
 dotfiles/
 ├── install.sh          # Main installation script
-├── install_exa.sh      # exa installation script
-├── backup/             # Backup directory for existing files
-├── .bashrc            # Bash configuration with Git prompt
+├── .bashrc            # Bash configuration with Git prompt and HSTR setup
 ├── .bash_aliases      # Smart aliases with fallbacks
+├── .gitignore         # Git ignore file (ignores backup directory)
+├── backup/            # Backup directory for existing files
 └── README.md          # This file
 ```
 
 ## Key Features
 
-### Bash Configuration
+### Bash Configuration (.bashrc)
 - **History timestamps** - All commands logged with timestamps
-- **Git integration** - Shows current Git branch in prompt
-- **HSTR setup** - Enhanced command history search
+- **Git integration** - Advanced Git prompt showing branch, status, and remote sync
+- **HSTR setup** - Enhanced command history search with Ctrl+R binding
 - **Autojump** - Smart directory navigation
-- **Colorful history** - Custom history display function
 
-### Smart Aliases
-- **Modern ls** - Uses exa with fallback to colored ls
-- **QOL aliases** - Quick navigation and utility commands
-- **Git shortcuts** - Comprehensive Git workflow aliases
+- **Local customization** - Support for `~/.bashrc.local` for personal settings
+
+### Smart Aliases (.bash_aliases)
+- **Modern ls** - Uses eza with fallback to exa, then colored ls
+- **QOL aliases** - Quick navigation (`..`, `...`) and utility commands
+- **Git shortcuts** - Comprehensive Git workflow aliases (`gs`, `gc`, `gp`, etc.)
 - **Log viewing** - System log aliases (only if logs exist)
-- **Disk utilities** - Mount and disk management aliases
+- **Disk utilities** - Mount and disk management aliases (`mnt`, `lsdisks`)
+
+### Git Prompt Features
+- **Branch display** - Shows current Git branch in prompt
+- **Status indicators**:
+  - ★ Staged files
+  - ● Unstaged changes  
+  - ○ Untracked files
+  - ↑ Local commits not pushed
+  - ↓ Behind remote
+  - ↕ Diverged from remote
+  - ⚠ Has commits but no upstream
 
 ## Customization
 
@@ -89,16 +99,17 @@ dotfiles/
 2. Add new dotfiles to the root directory
 3. Update the installation script to handle new files
 4. Modify the `PACKAGES` array in `install.sh` to add/remove dependencies
+5. Create `~/.bashrc.local` for personal customizations
 
 ## Backup and Restore
 
-The installation script automatically creates backups of existing files in the `backup/` directory.
+The installation script automatically creates backups of existing files in the `backup/` directory with timestamps.
 
 ## Requirements
 
 - **Ubuntu/Debian system** with apt package manager
 - **sudo privileges** for package installation
-- **Internet connection** for package downloads and Rust installation
+- **Internet connection** for package downloads
 
 ## Contributing
 
