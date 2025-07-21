@@ -7,7 +7,7 @@ alias mnt="mount | awk -F' ' '{ printf \"%s\t%s\n\",\$1,\$3; }' | column -t | eg
 alias cpv='rsync -ah --info=progress2'
 alias lsdisks='lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT,UUID,MODEL,SERIAL,REV,PTTYPE'
 
-# colorfull things - use exa or eza if available, fallback to ls with colors
+# colorfull things - use eza or exa if available, fallback to ls with colors
 if command -v eza >/dev/null 2>&1; then
     alias l='eza -alF --color=auto'
     alias ls='eza -a --color=auto'
