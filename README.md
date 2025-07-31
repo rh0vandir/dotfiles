@@ -40,7 +40,7 @@ curl -fsSL https://raw.githubusercontent.com/rh0vandir/dotfiles/main/install.sh 
 
 2. Run the installation script:
    ```bash
-   ./install.sh
+   bash ./install.sh
    ```
 
 ## Features
