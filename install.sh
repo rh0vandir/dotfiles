@@ -7,7 +7,7 @@
 #  Creator: Rhovandir
 #  License: MIT
 #  Created: 2025-07-20
-#  Version: 1.0.6
+#  Version: 1.0.7
 #
 # -----------------------------------------------------------------------------
 
@@ -39,18 +39,25 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Determine if sudo is available
+if command_exists sudo; then
+    APT_CMD="sudo apt"
+else
+    APT_CMD="apt"
+fi
+
 # Function to install eza or exa
 install_modern_ls() {
     echo -e "${BLUE}Installing modern ls replacement...${NC}"
-    
+      
     # Try to install eza first (preferred)
-    if sudo apt install -y eza; then
+    if $APT_CMD install -y eza; then
         echo -e "${GREEN}Installed eza via apt${NC}"
         return 0
     fi
     
     # Fall back to exa if eza is not available
-    if sudo apt install -y exa; then
+    if $APT_CMD install -y exa; then
         echo -e "${GREEN}Installed exa via apt${NC}"
         return 0
     fi
@@ -76,7 +83,7 @@ install_packages() {
     fi
     
     # Update package list
-    sudo apt update
+    $APT_CMD update
     
     # Install modern ls replacement (eza or exa)
     if command_exists eza; then
@@ -99,7 +106,7 @@ install_packages() {
 
     if [ "${#to_install[@]}" -gt 0 ]; then
         echo "Installing packages: ${to_install[*]}"
-        sudo apt install -y "${to_install[@]}"
+        $APT_CMD install -y "${to_install[@]}"
     else
         echo -e "${GREEN}All packages are already installed${NC}"
     fi
