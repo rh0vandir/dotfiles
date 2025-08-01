@@ -7,7 +7,7 @@
 #  Creator: Rhovandir
 #  License: MIT
 #  Created: 2025-07-20
-#  Version: 1.0.8
+#  Version: 1.0.9
 #
 # -----------------------------------------------------------------------------
 
@@ -180,12 +180,6 @@ fi
 echo -e "${GREEN}Installation complete!${NC}"
 echo "Backups are stored in the backup/ directory"
 echo "Run 'source ~/.bashrc' to apply changes"
-
-# Clean up temporary directory if we cloned the repo
-if [[ -n "$TEMP_DIR" ]] && [[ -d "$TEMP_DIR" ]]; then
-    echo -e "${BLUE}Cleaning up temporary files...${NC}"
-    rm -rf "$TEMP_DIR"
-fi
 
 echo ""
 echo -e "${BLUE}Installed packages:${NC}"
