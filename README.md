@@ -34,8 +34,8 @@ curl -fsSL https://raw.githubusercontent.com/rh0vandir/dotfiles/main/install.sh 
 ### Manual Install
 1. Clone this repository:
    ```bash
-   git clone https://github.com/rh0vandir/dotfiles.git ~/.dotfiles
-   cd ~/.dotfiles
+   git clone https://github.com/rh0vandir/dotfiles.git ~/dotfiles
+   cd ~/dotfiles
    ```
 
 2. Run the installation script:
@@ -63,6 +63,9 @@ dotfiles/
 ├── .gitignore         # Git ignore file (ignores backup directory)
 ├── backup/            # Backup directory for existing files
 └── README.md          # This file
+```
+
+**Note**: During installation, backups are stored in `~/.dotfiles_backup/` with timestamps.
 ```
 
 ## Key Features
@@ -103,7 +106,7 @@ dotfiles/
 
 ## Backup and Restore
 
-The installation script automatically creates backups of existing files in the `backup/` directory with timestamps.
+The installation script automatically creates backups of existing files in the `~/.dotfiles_backup/` directory with timestamps.
 
 ## Requirements
 
