@@ -57,8 +57,9 @@ if ! is_dotfiles_dir "$SCRIPT_DIR"; then
     fi
     
     # Create a temporary directory for cloning
-    mkdir -p "$HOME/temp"
-    cd "$HOME/temp"
+    TEMP_DIR="$HOME/temp"
+    mkdir -p "$TEMP_DIR"
+    cd "$TEMP_DIR"
     
     echo -e "Cloning dotfiles repository..."
     if git clone https://github.com/rh0vandir/dotfiles.git; then
@@ -67,7 +68,7 @@ if ! is_dotfiles_dir "$SCRIPT_DIR"; then
         echo -e "${GREEN}Successfully cloned dotfiles to $SCRIPT_DIR${NC}"
     else
         echo -e "${RED}Failed to clone dotfiles repository${NC}"
-        rm -rf "$HOME/temp/dotfiles"
+        rm -rf "$TEMP_DIR/dotfiles"
         exit 1
     fi
 fi
