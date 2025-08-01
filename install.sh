@@ -7,7 +7,7 @@
 #  Creator: Rhovandir
 #  License: MIT
 #  Created: 2025-07-20
-#  Version: 1.0.9
+#  Version: 1.0.10
 #
 # -----------------------------------------------------------------------------
 
@@ -56,10 +56,8 @@ if ! is_dotfiles_dir "$SCRIPT_DIR"; then
         $APT_CMD update && $APT_CMD install -y git
     fi
     
-    # Create a temporary directory for cloning
-    TEMP_DIR="$HOME/temp"
-    mkdir -p "$TEMP_DIR"
-    cd "$TEMP_DIR"
+    # Clone directly into user's home directory
+    cd "$HOME"
     
     echo -e "Cloning dotfiles repository..."
     if git clone https://github.com/rh0vandir/dotfiles.git; then
@@ -68,7 +66,6 @@ if ! is_dotfiles_dir "$SCRIPT_DIR"; then
         echo -e "${GREEN}Successfully cloned dotfiles to $SCRIPT_DIR${NC}"
     else
         echo -e "${RED}Failed to clone dotfiles repository${NC}"
-        rm -rf "$TEMP_DIR/dotfiles"
         exit 1
     fi
 fi
