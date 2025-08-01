@@ -146,12 +146,12 @@ install_file() {
     fi
     
     # Create backup directory if it doesn't exist
-    mkdir -p "$SCRIPT_DIR/backup"
+    mkdir -p "$HOME/.dotfiles_backup"
     
     if [[ -f "$target" ]]; then
         echo -e "${YELLOW}Backing up existing $target${NC}"
         timestamp=$(date +"%Y%m%d-%H%M")
-        cp "$target" "$SCRIPT_DIR/backup/$(basename "$target").$timestamp"
+        cp "$target" "$HOME/.dotfiles_backup/$(basename "$target").$timestamp"
     fi
     
     echo "Installing $target"
@@ -178,7 +178,7 @@ if ! install_file "$SCRIPT_DIR/.bash_aliases" "$HOME/.bash_aliases"; then
 fi
 
 echo -e "${GREEN}Installation complete!${NC}"
-echo "Backups are stored in the backup/ directory"
+echo "Backups are stored in ~/.dotfiles_backup/"
 echo "Run 'source ~/.bashrc' to apply changes"
 
 echo ""
